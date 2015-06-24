@@ -1,0 +1,123 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/bg"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    tools:context="com.altaoferta.reunio.ConfirmShiftActivity">
+
+    <LinearLayout
+        android:id="@+id/linearLayoutLogoLayout"
+        android:layout_width="280dp"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:gravity="center_horizontal"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/textViewLoginTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="35dp"
+            android:layout_marginBottom="50dp"
+            android:layout_marginTop="10dp"
+            android:text="CONFIRM THE SHIFT"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:textColor="@android:color/secondary_text_light"
+            android:textSize="25dp"
+            android:textStyle="bold" />
+
+        <LinearLayout
+            android:layout_width="250dp"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/TextViewNameTitle"
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="left"
+                android:text="Name:"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/TextViewNameValue"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="ABC XYZ" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="250dp"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/TextViewMobileTitle"
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:text="Mobile No:"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/TextViewMobileValue"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="8777990986" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="250dp"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/TextViewShiftNameTitle"
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:text="Shift Name:"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/TextViewShiftNameValue"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Shift 4" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="250dp"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/TextViewShiftTimeTitle"
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:text="Shift Time:"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/TextViewShiftTimeValue"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="10:00 HS" />
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/buttonConfirmShift"
+            android:layout_width="140dp"
+            android:layout_height="35dp"
+            android:layout_marginTop="20dp"
+            android:background="@color/button_color"
+            android:onClick="confirmingShift"
+            android:padding="5dp"
+            android:text="CONFIRM"
+            android:textColor="@android:color/white"
+            android:textSize="18dp"
+            android:textStyle="bold" />
+    </LinearLayout>
+
+</RelativeLayout>

@@ -7,29 +7,29 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.altaoferta.utils.ReuseableClass;
+import com.altaoferta.utils.ReusableClass;
 
 public class LoginActivity extends AppCompatActivity {
 
     private static final int TIME_INTERVAL = 2000;
-    EditText EditTextFirstName;
-    EditText EditTextEmployeeId;
+    EditText EditTextUsername;
+    EditText EditTextPassword;
     private long mBackPressed;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        EditTextFirstName = (EditText) findViewById(R.id.EditTextFirstName);
-        EditTextEmployeeId = (EditText) findViewById(R.id.EditTextEmployeeId);
+        EditTextUsername = (EditText) findViewById(R.id.EditTextUserName);
+        EditTextPassword = (EditText) findViewById(R.id.EditTextPass);
     }
 
     public void login(View view) {
-        if (EditTextFirstName.getText().toString().equalsIgnoreCase("") || EditTextEmployeeId.getText().toString().equalsIgnoreCase("")) {
+        if (EditTextUsername.getText().toString().equalsIgnoreCase("") || EditTextPassword.getText().toString().equalsIgnoreCase("")) {
             Toast.makeText(this, "All fields are mandatory !!", Toast.LENGTH_LONG).show();
         } else {
-            if (ReuseableClass.getFromPreference("first_name", LoginActivity.this).equalsIgnoreCase(EditTextFirstName.getText().toString()) &&
-                    ReuseableClass.getFromPreference("empid", LoginActivity.this).equalsIgnoreCase(EditTextEmployeeId.getText().toString())) {
+            if (ReusableClass.getFromPreference("username", LoginActivity.this).equalsIgnoreCase(EditTextUsername.getText().toString()) &&
+                    ReusableClass.getFromPreference("password", LoginActivity.this).equalsIgnoreCase(EditTextPassword.getText().toString())) {
                 Intent i = new Intent(this, DashBoardActivity.class);
                 finish();
                 startActivity(i);
@@ -45,7 +45,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     public void registering(View view) {
-        if (ReuseableClass.getFromPreference("first_name", LoginActivity.this).length() == 0) {
+        if (ReusableClass.getFromPreference("username", LoginActivity.this).length() == 0) {
             Intent i = new Intent(this, RegistrationActivity.class);
             finish();
             startActivity(i);

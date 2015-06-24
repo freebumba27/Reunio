@@ -7,15 +7,16 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.altaoferta.utils.ReuseableClass;
+import com.altaoferta.utils.ReusableClass;
 
 public class RegistrationActivity extends AppCompatActivity {
 
     EditText EditTextFirstName;
     EditText EditTextLastName;
-    EditText EditTextEmployeeId;
     EditText EditTextMobile;
-    EditText EditTextManagerEmail;
+    EditText EditTextUsername;
+    EditText EditTextPassword;
+    EditText EditTextConfirmPassword;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,9 +25,10 @@ public class RegistrationActivity extends AppCompatActivity {
 
         EditTextFirstName = (EditText) findViewById(R.id.EditTextFirstName);
         EditTextLastName = (EditText) findViewById(R.id.EditTextLastName);
-        EditTextEmployeeId = (EditText) findViewById(R.id.EditTextEmployeeId);
         EditTextMobile = (EditText) findViewById(R.id.EditTextMobile);
-        EditTextManagerEmail = (EditText) findViewById(R.id.EditTextManagerEmail);
+        EditTextUsername = (EditText) findViewById(R.id.EditTextUsername);
+        EditTextPassword = (EditText) findViewById(R.id.EditTextPass);
+        EditTextConfirmPassword = (EditText) findViewById(R.id.EditTextConfirmPassword);
     }
 
     @Override
@@ -39,14 +41,22 @@ public class RegistrationActivity extends AppCompatActivity {
     public void registering(View view) {
 
         if (EditTextFirstName.getText().toString().length() > 0 && EditTextLastName.getText().toString().length() > 0 &&
-                EditTextEmployeeId.getText().toString().length() > 0 && EditTextMobile.getText().toString().length() > 0 &&
-                EditTextManagerEmail.getText().toString().length() > 0) {
-            ReuseableClass.saveInPreference("empid", EditTextEmployeeId.getText().toString(), RegistrationActivity.this);
-            ReuseableClass.saveInPreference("first_name", EditTextFirstName.getText().toString(), RegistrationActivity.this);
-            ReuseableClass.saveInPreference("manager_email_id", EditTextManagerEmail.getText().toString(), RegistrationActivity.this);
+                EditTextPassword.getText().toString().length() > 0 && EditTextMobile.getText().toString().length() > 0 &&
+                EditTextConfirmPassword.getText().toString().length() > 0 && EditTextUsername.getText().toString().length() > 0) {
 
-            Toast.makeText(this, "Thanks for registering !!", Toast.LENGTH_LONG).show();
-            onBackPressed();
+            if (EditTextPassword.getText().toString().equalsIgnoreCase(EditTextConfirmPassword.getText().toString())) {
+                ReusableClass.saveInPreference("username", EditTextUsername.getText().toString(), RegistrationActivity.this);
+                ReusableClass.saveInPreference("password", EditTextPassword.getText().toString(), RegistrationActivity.this);
+                ReusableClass.saveInPreference("name", EditTextFirstName.getText().toString() + " "
+                        + EditTextLastName.getText().toString(), RegistrationActivity.this);
+                ReusableClass.saveInPreference("mobile_no", EditTextMobile.getText().toString(), RegistrationActivity.this);
+
+                Toast.makeText(this, "Thanks for registering !!", Toast.LENGTH_LONG).show();
+                onBackPressed();
+            } else {
+                Toast.makeText(this, "Password and confirm password mismatched !!", Toast.LENGTH_LONG).show();
+            }
+
         } else {
             Toast.makeText(this, "All fields are mandatory !!", Toast.LENGTH_LONG).show();
         }

@@ -24,7 +24,7 @@
             android:layout_height="35dp"
             android:layout_marginBottom="30dp"
             android:layout_marginTop="10dp"
-            android:text="Register Me"
+            android:text="REGISTER ME"
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:textColor="@android:color/secondary_text_light"
             android:textSize="25dp"
@@ -50,16 +50,6 @@
             android:padding="5dp" />
 
         <EditText
-            android:id="@+id/EditTextEmployeeId"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
-            android:background="@android:color/white"
-            android:hint="Employee ID"
-            android:inputType="textPersonName"
-            android:padding="5dp" />
-
-        <EditText
             android:id="@+id/EditTextMobile"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -70,13 +60,33 @@
             android:padding="5dp" />
 
         <EditText
-            android:id="@+id/EditTextManagerEmail"
+            android:id="@+id/EditTextUsername"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
             android:background="@android:color/white"
-            android:hint="Manager Email"
-            android:inputType="textEmailAddress"
+            android:hint="Username"
+            android:inputType="text"
+            android:padding="5dp" />
+
+        <EditText
+            android:id="@+id/EditTextPass"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:background="@android:color/white"
+            android:hint="Password"
+            android:inputType="textPassword"
+            android:padding="5dp" />
+
+        <EditText
+            android:id="@+id/EditTextConfirmPassword"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:background="@android:color/white"
+            android:hint="Confirm Password"
+            android:inputType="textPassword"
             android:padding="5dp" />
 
         <Button
