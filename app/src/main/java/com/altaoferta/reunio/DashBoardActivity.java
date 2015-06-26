@@ -12,23 +12,21 @@ import android.widget.AdapterView;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ListView;
-import android.widget.SimpleAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.altaoferta.utils.CustomAdapter;
+import com.altaoferta.utils.CustomObject;
 import com.altaoferta.utils.ReusableClass;
 
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 public class DashBoardActivity extends AppCompatActivity {
 
     EditText editTextDatePicker;
     ListView myListView;
-    List<Map<String, String>> data = new ArrayList<Map<String, String>>();
+    ArrayList<CustomObject> objects = new ArrayList<CustomObject>();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -41,12 +39,13 @@ public class DashBoardActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> adapter, View v, int position,
                                     long arg3) {
-                Log.d("TAG", "value: " + data.get(position).get("shift"));
-                Log.d("TAG", "value: " + data.get(position).get("shift_time"));
+                Log.d("TAG", "value: " + objects.get(position).getprop1());
+                Log.d("TAG", "value: " + objects.get(position).getprop2());
 
                 Intent i = new Intent(DashBoardActivity.this, ConfirmShiftActivity.class);
-                i.putExtra("shift", data.get(position).get("shift"));
-                i.putExtra("shift_time", data.get(position).get("shift_time"));
+                i.putExtra("shift", objects.get(position).getprop1());
+                i.putExtra("shift_time", objects.get(position).getprop2());
+                i.putExtra("shift_date", editTextDatePicker.getText().toString());
                 finish();
                 startActivity(i);
             }
@@ -85,41 +84,37 @@ public class DashBoardActivity extends AppCompatActivity {
     }
 
     public void searchingShifts(View view) {
-        if (editTextDatePicker.getText().toString().equalsIgnoreCase("Select date")) {
+        if (editTextDatePicker.getText().toString().equalsIgnoreCase("")) {
             Toast.makeText(this, "Please select a date first !!", Toast.LENGTH_LONG).show();
         } else {
-            SQLiteDatabase db = ReusableClass.createAndOpenDb(this);
-            Cursor cur = db.rawQuery("SELECT * FROM booked_shift_tbl WHERE shift_date = '" + editTextDatePicker.getText().toString() + "'", null);
+            SQLiteDatabase db = ReusableClass.createAndOpenDb(DashBoardActivity.this);
+            String sql = "SELECT * FROM booked_shift_tbl WHERE shift_date = '" + editTextDatePicker.getText().toString() + "'";
+            Log.i("TAG", sql);
+            Cursor cur = db.rawQuery(sql, null);
             String shiftArray[] = new String[cur.getCount()];
             int j = 0;
             if (cur.moveToNext()) {
                 do {
-                    shiftArray[j] = cur.getString(2);
+                    shiftArray[j] = cur.getString(1);
                     j++;
                 } while (cur.moveToNext());
             }
-            cur.close();
-            db.close();
 
-            if (cur.getCount() != 8)
-                ((TextView) findViewById(R.id.textViewPlanTitle)).setVisibility(View.INVISIBLE);
+            if (cur.getCount() < 9)
+                ((TextView) findViewById(R.id.textViewPlanTitle)).setVisibility(View.GONE);
 
             int time = 9;
-            for (int i = 1; i < (9 - cur.getCount()); i++) {
-                Map<String, String> datum = new HashMap<String, String>(2);
-
-                datum.put("shift", "Shift -" + i);
-                datum.put("shift_time", "Shift Timing: " + (time + 1) + ":00 HS");
-                data.add(datum);
+            objects.clear();
+            for (int i = 1; i < 9 ; i++) {
+                    objects.add(new CustomObject("Shift -" + i, "Shift Timing: " + (time + 1) + ":00 HS"));
                 time++;
             }
 
-            SimpleAdapter adapter = new SimpleAdapter(this, data,
-                    R.layout.simplerow,
-                    new String[]{"shift", "shift_time"},
-                    new int[]{R.id.rowTextView, R.id.rowTextView2});
+            CustomAdapter customAdapter = new CustomAdapter(this, objects, shiftArray);
+            myListView.setAdapter(customAdapter);
 
-            myListView.setAdapter(adapter);
+            cur.close();
+            db.close();
         }
     }
 
