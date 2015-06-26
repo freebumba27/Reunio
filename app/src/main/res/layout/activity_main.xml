@@ -106,7 +106,7 @@
             android:layout_marginTop="10dp"
             android:clickable="true"
             android:onClick="registering"
-            android:text="I am new here"
+            android:text="I Don't Have Account"
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:textColor="@android:color/secondary_text_light"
             android:textSize="15dp"

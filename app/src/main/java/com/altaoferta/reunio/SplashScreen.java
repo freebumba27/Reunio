@@ -22,7 +22,7 @@ public class SplashScreen extends Activity {
         setContentView(R.layout.activity_splash_screen);
 
         SQLiteDatabase db = ReusableClass.createAndOpenDb(SplashScreen.this);
-
+        db.close();
         Animation slideUp = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.slide_up);
         logo_layout = (LinearLayout) findViewById(R.id.linearLayoutLogoLayout);
         logo_layout.setAnimation(slideUp);

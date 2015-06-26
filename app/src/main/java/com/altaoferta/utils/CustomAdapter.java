@@ -1,32 +1,26 @@
 package com.altaoferta.utils;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.altaoferta.reunio.R;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 
 /**
  * Created by Dream on 25-Jun-15.
  */
 public class CustomAdapter extends BaseAdapter {
 
-    private LayoutInflater inflater;
-    private ArrayList<CustomObject> objects;
     Context con;
     String[] shiftValueArray;
-
-    private class ViewHolder {
-        TextView textView1;
-        TextView textView2;
-    }
+    private LayoutInflater inflater;
+    private ArrayList<CustomObject> objects;
 
     public CustomAdapter(Context context, ArrayList<CustomObject> objects, String[] shiftArray) {
         inflater = LayoutInflater.from(context);
@@ -48,10 +42,6 @@ public class CustomAdapter extends BaseAdapter {
     }
 
     public View getView(int position, View convertView, ViewGroup parent) {
-        View v = convertView;
-        if(v==null){
-            v = inflater.inflate(R.layout.simplerow, null);
-        }
 
         ViewHolder holder = null;
         if(convertView == null) {
@@ -63,23 +53,22 @@ public class CustomAdapter extends BaseAdapter {
         } else {
             holder = (ViewHolder) convertView.getTag();
         }
-
-        int time = 9;
         for (int i = 1; i < 9 ; i++) {
-            if(Arrays.asList(shiftValueArray).contains("Shift -" + (position + i))) {
-                Log.i("TAG", "matched"+(position + i));
-                v.setBackgroundResource(R.drawable.red_bg);
-            }
-            else
-            {
-                Log.i("TAG", "not matched"+(position + i));
-                v.setBackgroundResource(R.drawable.green_bg);
-            }
-            time++;
+            ((RelativeLayout) convertView.findViewById(R.id.RelativeLayoutSingleRow)).setBackgroundResource(R.drawable.green_bg);
+        }
+
+        for (int i = 0; i < shiftValueArray.length; i++) {
+            if (shiftValueArray[i].equalsIgnoreCase(objects.get(position).getprop1()))
+                ((RelativeLayout) convertView.findViewById(R.id.RelativeLayoutSingleRow)).setBackgroundResource(R.drawable.red_bg);
         }
 
         holder.textView1.setText(objects.get(position).getprop1());
         holder.textView2.setText(objects.get(position).getprop2());
         return convertView;
+    }
+
+    private class ViewHolder {
+        TextView textView1;
+        TextView textView2;
     }
 }

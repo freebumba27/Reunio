@@ -19,7 +19,9 @@ import com.altaoferta.utils.CustomAdapter;
 import com.altaoferta.utils.CustomObject;
 import com.altaoferta.utils.ReusableClass;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 
 public class DashBoardActivity extends AppCompatActivity {
@@ -27,12 +29,18 @@ public class DashBoardActivity extends AppCompatActivity {
     EditText editTextDatePicker;
     ListView myListView;
     ArrayList<CustomObject> objects = new ArrayList<CustomObject>();
+    private String[] shiftArray = null;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dash_board);
 
         editTextDatePicker = (EditText) findViewById(R.id.editTextDatePicker);
+
+        Calendar c = Calendar.getInstance();
+        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy ");
+        editTextDatePicker.setText(sdf.format(c.getTime()));
 
         myListView = (ListView) findViewById(R.id.myListView);
         myListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -42,14 +50,19 @@ public class DashBoardActivity extends AppCompatActivity {
                 Log.d("TAG", "value: " + objects.get(position).getprop1());
                 Log.d("TAG", "value: " + objects.get(position).getprop2());
 
-                Intent i = new Intent(DashBoardActivity.this, ConfirmShiftActivity.class);
-                i.putExtra("shift", objects.get(position).getprop1());
-                i.putExtra("shift_time", objects.get(position).getprop2());
-                i.putExtra("shift_date", editTextDatePicker.getText().toString());
-                finish();
-                startActivity(i);
+                if (Arrays.asList(shiftArray).contains(objects.get(position).getprop1())) {
+                    Toast.makeText(DashBoardActivity.this, "Sorry this shift is not available !!", Toast.LENGTH_LONG).show();
+                } else {
+                    Intent i = new Intent(DashBoardActivity.this, ConfirmShiftActivity.class);
+                    i.putExtra("shift", objects.get(position).getprop1());
+                    i.putExtra("shift_time", objects.get(position).getprop2());
+                    i.putExtra("shift_date", editTextDatePicker.getText().toString());
+                    finish();
+                    startActivity(i);
+                }
             }
         });
+        searchAllShifts();
     }
 
     @Override
@@ -79,11 +92,16 @@ public class DashBoardActivity extends AppCompatActivity {
                         .append(selectedyear).append(" "));
             }
         }, mYear, mMonth, mDay);
-        mDatePicker.setTitle("Select date");
+
+        mDatePicker.setTitle("Select Date");
         mDatePicker.show();
     }
 
     public void searchingShifts(View view) {
+        searchAllShifts();
+    }
+
+    private void searchAllShifts() {
         if (editTextDatePicker.getText().toString().equalsIgnoreCase("")) {
             Toast.makeText(this, "Please select a date first !!", Toast.LENGTH_LONG).show();
         } else {
@@ -91,7 +109,7 @@ public class DashBoardActivity extends AppCompatActivity {
             String sql = "SELECT * FROM booked_shift_tbl WHERE shift_date = '" + editTextDatePicker.getText().toString() + "'";
             Log.i("TAG", sql);
             Cursor cur = db.rawQuery(sql, null);
-            String shiftArray[] = new String[cur.getCount()];
+            shiftArray = new String[cur.getCount()];
             int j = 0;
             if (cur.moveToNext()) {
                 do {
@@ -106,7 +124,7 @@ public class DashBoardActivity extends AppCompatActivity {
             int time = 9;
             objects.clear();
             for (int i = 1; i < 9 ; i++) {
-                    objects.add(new CustomObject("Shift -" + i, "Shift Timing: " + (time + 1) + ":00 HS"));
+                objects.add(new CustomObject("Shift -" + i, "Shift Timing: " + (time + 1) + ":00 HS"));
                 time++;
             }
 
