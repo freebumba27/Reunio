@@ -53,7 +53,7 @@ public class CustomAdapter extends BaseAdapter {
         } else {
             holder = (ViewHolder) convertView.getTag();
         }
-        for (int i = 1; i < 9 ; i++) {
+        for (int i = 1; i < 14; i++) {
             ((RelativeLayout) convertView.findViewById(R.id.RelativeLayoutSingleRow)).setBackgroundResource(R.drawable.green_bg);
         }
 
@@ -62,8 +62,9 @@ public class CustomAdapter extends BaseAdapter {
                 ((RelativeLayout) convertView.findViewById(R.id.RelativeLayoutSingleRow)).setBackgroundResource(R.drawable.red_bg);
         }
 
-        holder.textView1.setText(objects.get(position).getprop1());
+        holder.textView1.setText(objects.get(position).getprop3());
         holder.textView2.setText(objects.get(position).getprop2());
+        holder.textView2.setVisibility(View.GONE);
         return convertView;
     }
 

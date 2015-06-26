@@ -6,6 +6,8 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -63,6 +65,20 @@ public class DashBoardActivity extends AppCompatActivity {
             }
         });
         searchAllShifts();
+
+        editTextDatePicker.addTextChangedListener(new TextWatcher() {
+
+            public void afterTextChanged(Editable s) {
+                Log.i("TAG", "changed");
+                searchAllShifts();
+            }
+
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            }
+        });
     }
 
     @Override
@@ -97,10 +113,6 @@ public class DashBoardActivity extends AppCompatActivity {
         mDatePicker.show();
     }
 
-    public void searchingShifts(View view) {
-        searchAllShifts();
-    }
-
     private void searchAllShifts() {
         if (editTextDatePicker.getText().toString().equalsIgnoreCase("")) {
             Toast.makeText(this, "Please select a date first !!", Toast.LENGTH_LONG).show();
@@ -121,10 +133,14 @@ public class DashBoardActivity extends AppCompatActivity {
             if (cur.getCount() < 9)
                 ((TextView) findViewById(R.id.textViewPlanTitle)).setVisibility(View.GONE);
 
-            int time = 9;
+            int time = 8;
             objects.clear();
-            for (int i = 1; i < 9 ; i++) {
-                objects.add(new CustomObject("Shift -" + i, "Shift Timing: " + (time + 1) + ":00 HS"));
+            for (int i = 1; i < 14; i++) {
+                if (Arrays.asList(shiftArray).contains("Shift -" + i))
+                    objects.add(new CustomObject("Shift -" + i, "Shift Timing: " + (time + 1) + ":00 HS", (time + 1) + ":00 - Not Available !"));
+                else
+                    objects.add(new CustomObject("Shift -" + i, "Shift Timing: " + (time + 1) + ":00 HS", (time + 1) + ":00 - Available !"));
+
                 time++;
             }
 
