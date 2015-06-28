@@ -29,7 +29,7 @@ public class AlarmActivity extends Activity {
         window.addFlags(WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON);
 
         textViewShowMessage = (TextView)findViewById(R.id.textViewShowMessage);
-        textViewShowMessage.setText("You Have An Appointment At "+getIntent().getStringExtra("time"));
+        textViewShowMessage.setText("You Have an Appointment at "+getIntent().getStringExtra("time"));
 
         v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
         long[] pattern = {1000, 2000, 3000, 4000, 1000, 2000, 3000, 4000, 1000, 2000, 3000, 4000, 1000, 2000, 3000, 4000, 1000, 2000, 3000, 4000, 1000, 2000, 3000, 4000};
