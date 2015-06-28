@@ -1,5 +1,7 @@
 package com.altaoferta.reunio;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.content.Intent;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
@@ -11,6 +13,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.altaoferta.utils.ReusableClass;
+
+import java.util.Calendar;
 
 public class ConfirmShiftActivity extends AppCompatActivity {
 
@@ -59,6 +63,30 @@ public class ConfirmShiftActivity extends AppCompatActivity {
                     TextViewShiftDateValue.getText().toString()+"','" + TextViewShiftTimeValue.getText().toString()+"');";
             Log.i("TAG", sql);
             db.execSQL(sql);
+//
+//            Calendar cal = Calendar.getInstance();
+//            cal.setTimeInMillis(System.currentTimeMillis());
+//            cal.clear();
+//            cal.set(2015,5,27,13,00);
+
+            Calendar cal = Calendar.getInstance();
+            cal.setTimeInMillis(System.currentTimeMillis());
+            cal.clear();
+            cal.set(Integer.parseInt(TextViewShiftDateValue.getText().toString().substring(6,10)),
+                    (Integer.parseInt(TextViewShiftDateValue.getText().toString().substring(3,5))-1),
+                    Integer.parseInt(TextViewShiftDateValue.getText().toString().substring(0,2)),
+                    Integer.parseInt(TextViewShiftTimeValue.getText().toString().substring(0,2)),
+                    Integer.parseInt(TextViewShiftTimeValue.getText().toString().substring(3,5)));
+
+            Intent myIntent1 = new Intent(this, AlarmBroadCustReciver.class);
+            myIntent1.putExtra("time", TextViewShiftTimeValue.getText().toString());
+            PendingIntent pendingIntent1 = PendingIntent.getBroadcast(this, 1253, myIntent1,
+                    PendingIntent.FLAG_UPDATE_CURRENT);
+
+            AlarmManager alarmManager1 = (AlarmManager) getSystemService(ALARM_SERVICE);
+            alarmManager1.set(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), pendingIntent1);
+
+
 
             Toast.makeText(this, "Thanks for confirming you shift!!", Toast.LENGTH_LONG).show();
         } catch (SQLException e) {

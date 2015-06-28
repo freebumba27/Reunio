@@ -7,4 +7,5 @@
     <string name="double_back_pressed_error">Press again to exit...</string>
     <string name="select_shift">SELECT YOUR SHIFT</string>
     <string name="title_activity_confirm_shift">ConfirmShiftActivity</string>
+    <string name="title_activity_alarm">AlarmActivity</string>
 </resources>

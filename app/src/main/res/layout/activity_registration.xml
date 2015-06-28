@@ -37,7 +37,8 @@
             android:background="@android:color/white"
             android:hint="First Name"
             android:inputType="textPersonName"
-            android:padding="5dp" />
+            android:padding="5dp"
+            android:singleLine="true"/>
 
         <EditText
             android:id="@+id/EditTextLastName"
@@ -47,7 +48,8 @@
             android:background="@android:color/white"
             android:hint="Last Name"
             android:inputType="textPersonName"
-            android:padding="5dp" />
+            android:padding="5dp"
+            android:singleLine="true"/>
 
         <EditText
             android:id="@+id/EditTextMobile"
@@ -57,7 +59,8 @@
             android:background="@android:color/white"
             android:hint="Mobile No"
             android:inputType="phone"
-            android:padding="5dp" />
+            android:padding="5dp"
+            android:singleLine="true"/>
 
         <EditText
             android:id="@+id/EditTextUsername"
@@ -67,7 +70,8 @@
             android:background="@android:color/white"
             android:hint="Username"
             android:inputType="text"
-            android:padding="5dp" />
+            android:padding="5dp"
+            android:singleLine="true"/>
 
         <EditText
             android:id="@+id/EditTextPass"
@@ -77,7 +81,8 @@
             android:background="@android:color/white"
             android:hint="Password"
             android:inputType="textPassword"
-            android:padding="5dp" />
+            android:padding="5dp"
+            android:singleLine="true"/>
 
         <EditText
             android:id="@+id/EditTextConfirmPassword"
@@ -87,7 +92,8 @@
             android:background="@android:color/white"
             android:hint="Confirm Password"
             android:inputType="textPassword"
-            android:padding="5dp" />
+            android:padding="5dp"
+            android:singleLine="true"/>
 
         <Button
             android:id="@+id/buttonRegister"

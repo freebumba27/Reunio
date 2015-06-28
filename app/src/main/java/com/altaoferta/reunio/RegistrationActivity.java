@@ -3,8 +3,12 @@ package com.altaoferta.reunio;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.view.KeyEvent;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
+import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.altaoferta.utils.ReusableClass;
@@ -29,6 +33,16 @@ public class RegistrationActivity extends AppCompatActivity {
         EditTextUsername = (EditText) findViewById(R.id.EditTextUsername);
         EditTextPassword = (EditText) findViewById(R.id.EditTextPass);
         EditTextConfirmPassword = (EditText) findViewById(R.id.EditTextConfirmPassword);
+
+        EditTextConfirmPassword.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if(actionId== EditorInfo.IME_ACTION_DONE){
+                    ((Button)findViewById(R.id.buttonRegister)).performClick();
+                }
+                return false;
+            }
+        });
     }
 
     @Override

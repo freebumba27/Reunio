@@ -137,9 +137,13 @@ public class DashBoardActivity extends AppCompatActivity {
             objects.clear();
             for (int i = 1; i < 14; i++) {
                 if (Arrays.asList(shiftArray).contains("Shift -" + i))
-                    objects.add(new CustomObject("Shift -" + i, "Shift Timing: " + (time + 1) + ":00 HS", (time + 1) + ":00 - Not Available !"));
+                    objects.add(new CustomObject("Shift -" + i, "Shift Timing: " +
+                            ((((time + 1)+"").length()==1) ? "0"+(time + 1) : (time + 1)) + ":00 HS",
+                            ((((time + 1)+"").length()==1) ? "0"+(time + 1) : (time + 1)) + ":00 - Not Available !"));
                 else
-                    objects.add(new CustomObject("Shift -" + i, "Shift Timing: " + (time + 1) + ":00 HS", (time + 1) + ":00 - Available !"));
+                    objects.add(new CustomObject("Shift -" + i, "Shift Timing: " +
+                            ((((time + 1)+"").length()==1) ? "0"+(time + 1) : (time + 1)) + ":00 HS",
+                            ((((time + 1)+"").length()==1) ? "0"+(time + 1) : (time + 1)) + ":00 - Available !"));
 
                 time++;
             }
