@@ -8,4 +8,7 @@
     <string name="select_shift">SELECT YOUR SHIFT</string>
     <string name="title_activity_confirm_shift">ConfirmShiftActivity</string>
     <string name="title_activity_alarm">AlarmActivity</string>
+    <string name="server_error">Server error !! Please try again.</string>
+    <string name="other_error">Something went wrong !! Please try again.</string>
+    <string name="user_exists_error">Username already exists ...</string>
 </resources>

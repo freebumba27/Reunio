@@ -14,6 +14,8 @@ import java.io.IOException;
  */
 public class ReusableClass {
 
+    public static String baseUrl = "http://bumba27.byethost16.com/";
+
     public static SQLiteDatabase createAndOpenDb(Context con) {
         //----------------------------------------
         // Create the database

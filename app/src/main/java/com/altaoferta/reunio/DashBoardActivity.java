@@ -52,15 +52,31 @@ public class DashBoardActivity extends AppCompatActivity {
                 Log.d("TAG", "value: " + objects.get(position).getprop1());
                 Log.d("TAG", "value: " + objects.get(position).getprop2());
 
-                if (Arrays.asList(shiftArray).contains(objects.get(position).getprop1())) {
-                    Toast.makeText(DashBoardActivity.this, "Sorry this shift is not available !!", Toast.LENGTH_LONG).show();
+
+                Calendar c = Calendar.getInstance();
+                int Hr24 = c.get(Calendar.HOUR_OF_DAY);
+                int Min = c.get(Calendar.MINUTE);
+
+                int current = Integer.parseInt("" + Hr24 + Min);
+                int shiftTime = Integer.parseInt(objects.get(position).getprop2().substring(14, 16) +
+                        objects.get(position).getprop2().substring(17, 19));
+
+                Log.d("TAG", "current Time:" + current);
+                Log.d("TAG", "shift Time:" + shiftTime);
+
+                if (shiftTime > current) {
+                    if (Arrays.asList(shiftArray).contains(objects.get(position).getprop1())) {
+                        Toast.makeText(DashBoardActivity.this, "Sorry this shift is not available !!", Toast.LENGTH_LONG).show();
+                    } else {
+                        Intent i = new Intent(DashBoardActivity.this, ConfirmShiftActivity.class);
+                        i.putExtra("shift", objects.get(position).getprop1());
+                        i.putExtra("shift_time", objects.get(position).getprop2());
+                        i.putExtra("shift_date", editTextDatePicker.getText().toString());
+                        finish();
+                        startActivity(i);
+                    }
                 } else {
-                    Intent i = new Intent(DashBoardActivity.this, ConfirmShiftActivity.class);
-                    i.putExtra("shift", objects.get(position).getprop1());
-                    i.putExtra("shift_time", objects.get(position).getprop2());
-                    i.putExtra("shift_date", editTextDatePicker.getText().toString());
-                    finish();
-                    startActivity(i);
+                    Toast.makeText(DashBoardActivity.this, "Sorry shift is already over !!", Toast.LENGTH_LONG).show();
                 }
             }
         });

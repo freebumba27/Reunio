@@ -1,8 +1,11 @@
 package com.altaoferta.reunio;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
@@ -13,12 +16,26 @@ import android.widget.Toast;
 
 import com.altaoferta.utils.ReusableClass;
 
+import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.util.EntityUtils;
+
+import java.util.ArrayList;
+import java.util.List;
+
 public class LoginActivity extends AppCompatActivity {
 
     private static final int TIME_INTERVAL = 2000;
     EditText EditTextUsername;
     EditText EditTextPassword;
     private long mBackPressed;
+
+    private ProgressDialog dialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,20 +59,22 @@ public class LoginActivity extends AppCompatActivity {
         if (EditTextUsername.getText().toString().equalsIgnoreCase("") || EditTextPassword.getText().toString().equalsIgnoreCase("")) {
             Toast.makeText(this, "All fields are mandatory !!", Toast.LENGTH_LONG).show();
         } else {
-            if (ReusableClass.getFromPreference("username", LoginActivity.this).equalsIgnoreCase(EditTextUsername.getText().toString()) &&
-                    ReusableClass.getFromPreference("password", LoginActivity.this).equalsIgnoreCase(EditTextPassword.getText().toString())) {
-                Intent i = new Intent(this, DashBoardActivity.class);
-                finish();
-                startActivity(i);
-            } else {
-                Toast.makeText(this, "Please check your credentials !!", Toast.LENGTH_LONG).show();
-            }
+
+            dialog = new ProgressDialog(LoginActivity.this);
+            dialog.setMessage("Please wait ...");
+            dialog.show();
+
+            new LoginTask().execute(EditTextUsername.getText().toString(), EditTextPassword.getText().toString());
+
+//            if (ReusableClass.getFromPreference("username", LoginActivity.this).equalsIgnoreCase(EditTextUsername.getText().toString()) &&
+//                    ReusableClass.getFromPreference("password", LoginActivity.this).equalsIgnoreCase(EditTextPassword.getText().toString())) {
+//                Intent i = new Intent(this, DashBoardActivity.class);
+//                finish();
+//                startActivity(i);
+//            } else {
+//                Toast.makeText(this, "Please check your credentials !!", Toast.LENGTH_LONG).show();
+//            }
         }
-
-
-//        Intent i = new Intent(this, DashBoardActivity.class);
-//        finish();
-//        startActivity(i);
     }
 
     public void registering(View view) {
@@ -78,5 +97,44 @@ public class LoginActivity extends AppCompatActivity {
         }
 
         mBackPressed = System.currentTimeMillis();
+    }
+
+    private class LoginTask extends AsyncTask<String, String, String> {
+        protected String doInBackground(String... values) {
+            String responseBody = "";
+            HttpClient httpclient = new DefaultHttpClient();
+            HttpPost httppost = new HttpPost(ReusableClass.baseUrl + "reunio/login_user.php");
+            try {
+                List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(2);
+                nameValuePairs.add(new BasicNameValuePair("username", values[0]));
+                nameValuePairs.add(new BasicNameValuePair("password", values[1]));
+
+                httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
+                HttpResponse response = httpclient.execute(httppost);
+
+                int responseCode = response.getStatusLine().getStatusCode();
+                if (responseCode == 200) {
+                    responseBody = EntityUtils.toString(response.getEntity());
+                    Log.d("TAG", "value: " + responseBody);
+                }
+            } catch (Exception t) {
+                Log.e("TAG", "Error: " + t);
+            }
+            return responseBody;
+        }
+
+        protected void onPostExecute(String result) {
+            Log.d("TAG", "value: " + result);
+            if (result.contains("user_id")) {
+                Intent i = new Intent(LoginActivity.this, DashBoardActivity.class);
+                finish();
+                startActivity(i);
+            } else if (result.equalsIgnoreCase("NO")) {
+                Toast.makeText(LoginActivity.this, "Please check your credentials !!", Toast.LENGTH_LONG).show();
+            } else {
+                Toast.makeText(LoginActivity.this, R.string.other_error, Toast.LENGTH_SHORT).show();
+            }
+            dialog.dismiss();
+        }
     }
 }
