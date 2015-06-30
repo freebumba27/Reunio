@@ -40,8 +40,8 @@ public class AlarmActivity extends Activity {
         AudioManager am = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
         try {
             mMediaPlayer.setDataSource(this, alert);
-            mMediaPlayer.setVolume(Float.parseFloat(Double.toString(am.getStreamVolume(AudioManager.STREAM_MUSIC) / 7.0)),
-                    Float.parseFloat(Double.toString(am.getStreamVolume(AudioManager.STREAM_MUSIC) / 7.0)));
+            mMediaPlayer.setVolume(Float.parseFloat(Double.toString(am.getStreamVolume(AudioManager.STREAM_ALARM) / 7.0)),
+                    Float.parseFloat(Double.toString(am.getStreamVolume(AudioManager.STREAM_RING) / 7.0)));
 
             mMediaPlayer.setLooping(true);
             mMediaPlayer.prepare();

@@ -11,4 +11,5 @@
     <string name="server_error">Server error !! Please try again.</string>
     <string name="other_error">Something went wrong !! Please try again.</string>
     <string name="user_exists_error">Username already exists ...</string>
+    <string name="shift_already_booked_error">Sorry shift already booked !!</string>
 </resources>

@@ -24,6 +24,9 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -125,10 +128,24 @@ public class LoginActivity extends AppCompatActivity {
 
         protected void onPostExecute(String result) {
             Log.d("TAG", "value: " + result);
-            if (result.contains("user_id")) {
-                Intent i = new Intent(LoginActivity.this, DashBoardActivity.class);
-                finish();
-                startActivity(i);
+
+            if (result.contains("mobile_no")) {
+
+                try {
+                    JSONArray jsonarray = new JSONArray(result);
+                    for (int i = 0; i < jsonarray.length(); i++) {
+                        JSONObject jsonobject = jsonarray.getJSONObject(i);
+                        ReusableClass.saveInPreference("user_id", jsonobject.getString("id"), LoginActivity.this);
+                        ReusableClass.saveInPreference("name", jsonobject.getString("name"), LoginActivity.this);
+                        ReusableClass.saveInPreference("mobile_no", jsonobject.getString("mobile_no"), LoginActivity.this);
+                    }
+                    Intent i = new Intent(LoginActivity.this, DashBoardActivity.class);
+                    finish();
+                    startActivity(i);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                    Toast.makeText(LoginActivity.this, R.string.other_error, Toast.LENGTH_SHORT).show();
+                }
             } else if (result.equalsIgnoreCase("NO")) {
                 Toast.makeText(LoginActivity.this, "Please check your credentials !!", Toast.LENGTH_LONG).show();
             } else {

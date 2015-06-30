@@ -39,18 +39,6 @@
             android:onClick="datePicker"
             android:padding="5dp" />
 
-        <TextView
-            android:id="@+id/textViewPlanTitle"
-            android:layout_width="wrap_content"
-            android:layout_height="35dp"
-            android:layout_centerHorizontal="true"
-            android:layout_marginBottom="20dp"
-            android:layout_marginTop="30dp"
-            android:text="NO SHIFT AVAILABLE"
-            android:textAppearance="?android:attr/textAppearanceLarge"
-            android:textSize="25dp"
-            android:textStyle="bold" />
-
         <ListView
             android:id="@+id/myListView"
             android:layout_width="fill_parent"

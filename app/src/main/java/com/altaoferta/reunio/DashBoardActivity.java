@@ -1,9 +1,9 @@
 package com.altaoferta.reunio;
 
 import android.app.DatePickerDialog;
+import android.app.ProgressDialog;
 import android.content.Intent;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
@@ -14,17 +14,29 @@ import android.widget.AdapterView;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ListView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.altaoferta.utils.CustomAdapter;
 import com.altaoferta.utils.CustomObject;
 import com.altaoferta.utils.ReusableClass;
 
+import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.util.EntityUtils;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.List;
 
 public class DashBoardActivity extends AppCompatActivity {
 
@@ -32,7 +44,7 @@ public class DashBoardActivity extends AppCompatActivity {
     ListView myListView;
     ArrayList<CustomObject> objects = new ArrayList<CustomObject>();
     private String[] shiftArray = null;
-
+    private ProgressDialog dialog;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -54,11 +66,18 @@ public class DashBoardActivity extends AppCompatActivity {
 
 
                 Calendar c = Calendar.getInstance();
-                int Hr24 = c.get(Calendar.HOUR_OF_DAY);
-                int Min = c.get(Calendar.MINUTE);
+                String date = String.format("%02d", c.get(Calendar.DAY_OF_MONTH));
+                String month = String.format("%02d", (c.get(Calendar.MONTH) + 1));
+                String year = c.get(Calendar.YEAR) + "";
+                String Hr24 = String.format("%02d", c.get(Calendar.HOUR_OF_DAY));
+                String Min = String.format("%02d", c.get(Calendar.MINUTE));
 
-                int current = Integer.parseInt("" + Hr24 + Min);
-                int shiftTime = Integer.parseInt(objects.get(position).getprop2().substring(14, 16) +
+                long current = Long.parseLong("" + year + month + date + Hr24 + Min);
+                Log.e("TAG", "VALUE: " + editTextDatePicker.getText().toString());
+                long shiftTime = Long.parseLong(editTextDatePicker.getText().toString().substring(6, 10) +
+                        editTextDatePicker.getText().toString().substring(3, 5) +
+                        editTextDatePicker.getText().toString().substring(0, 2) +
+                        objects.get(position).getprop2().substring(14, 16) +
                         objects.get(position).getprop2().substring(17, 19));
 
                 Log.d("TAG", "current Time:" + current);
@@ -116,11 +135,10 @@ public class DashBoardActivity extends AppCompatActivity {
 
         DatePickerDialog mDatePicker = new DatePickerDialog(DashBoardActivity.this, new DatePickerDialog.OnDateSetListener() {
             public void onDateSet(DatePicker datepicker, int selectedyear, int selectedmonth, int selectedday) {
-                String selectedmonthModified = (selectedmonth + 1) / 10 == 0 ? ("0" + (selectedmonth + 1)) : String.valueOf((selectedmonth + 1));
 
                 editTextDatePicker.setText(new StringBuilder()
-                        .append(selectedday).append("-")
-                        .append(selectedmonthModified).append("-")
+                        .append(String.format("%02d", selectedday)).append("-")
+                        .append(String.format("%02d", selectedmonth + 1)).append("-")
                         .append(selectedyear).append(" "));
             }
         }, mYear, mMonth, mDay);
@@ -133,42 +151,11 @@ public class DashBoardActivity extends AppCompatActivity {
         if (editTextDatePicker.getText().toString().equalsIgnoreCase("")) {
             Toast.makeText(this, "Please select a date first !!", Toast.LENGTH_LONG).show();
         } else {
-            SQLiteDatabase db = ReusableClass.createAndOpenDb(DashBoardActivity.this);
-            String sql = "SELECT * FROM booked_shift_tbl WHERE shift_date = '" + editTextDatePicker.getText().toString() + "'";
-            Log.i("TAG", sql);
-            Cursor cur = db.rawQuery(sql, null);
-            shiftArray = new String[cur.getCount()];
-            int j = 0;
-            if (cur.moveToNext()) {
-                do {
-                    shiftArray[j] = cur.getString(1);
-                    j++;
-                } while (cur.moveToNext());
-            }
+            dialog = new ProgressDialog(this);
+            dialog.setMessage("Please Wait ...");
+            dialog.show();
 
-            if (cur.getCount() < 9)
-                ((TextView) findViewById(R.id.textViewPlanTitle)).setVisibility(View.GONE);
-
-            int time = 8;
-            objects.clear();
-            for (int i = 1; i < 14; i++) {
-                if (Arrays.asList(shiftArray).contains("Shift -" + i))
-                    objects.add(new CustomObject("Shift -" + i, "Shift Timing: " +
-                            ((((time + 1)+"").length()==1) ? "0"+(time + 1) : (time + 1)) + ":00 HS",
-                            ((((time + 1)+"").length()==1) ? "0"+(time + 1) : (time + 1)) + ":00 - Not Available !"));
-                else
-                    objects.add(new CustomObject("Shift -" + i, "Shift Timing: " +
-                            ((((time + 1)+"").length()==1) ? "0"+(time + 1) : (time + 1)) + ":00 HS",
-                            ((((time + 1)+"").length()==1) ? "0"+(time + 1) : (time + 1)) + ":00 - Available !"));
-
-                time++;
-            }
-
-            CustomAdapter customAdapter = new CustomAdapter(this, objects, shiftArray);
-            myListView.setAdapter(customAdapter);
-
-            cur.close();
-            db.close();
+            new GetAllShiftTask().execute(ReusableClass.getFromPreference("user_id", this), editTextDatePicker.getText().toString());
         }
     }
 
@@ -176,4 +163,70 @@ public class DashBoardActivity extends AppCompatActivity {
     //END Date picker
     //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
+
+    private class GetAllShiftTask extends AsyncTask<String, String, String> {
+        protected String doInBackground(String... values) {
+            String responseBody = "";
+            HttpClient httpclient = new DefaultHttpClient();
+            HttpPost httppost = new HttpPost(ReusableClass.baseUrl + "reunio/get_all_shift.php");
+            try {
+                List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(2);
+                nameValuePairs.add(new BasicNameValuePair("user_id", values[0]));
+                nameValuePairs.add(new BasicNameValuePair("shift_date", values[1]));
+
+                httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
+                HttpResponse response = httpclient.execute(httppost);
+
+                int responseCode = response.getStatusLine().getStatusCode();
+                if (responseCode == 200) {
+                    responseBody = EntityUtils.toString(response.getEntity());
+                    Log.d("TAG", "value: " + responseBody);
+                }
+            } catch (Exception t) {
+                Log.e("TAG", "Error: " + t);
+            }
+            return responseBody;
+        }
+
+        protected void onPostExecute(String result) {
+            Log.d("TAG", "value: " + result);
+            if (!result.equalsIgnoreCase("NO")) {
+                try {
+                    JSONArray jsonarray = new JSONArray(result);
+                    shiftArray = new String[jsonarray.length()];
+                    for (int i = 0; i < jsonarray.length(); i++) {
+                        JSONObject jsonobject = jsonarray.getJSONObject(i);
+                        shiftArray[i] = jsonobject.getString("shift_name");
+                        Log.d("TAG", "Shift name: " + shiftArray[i]);
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                    Toast.makeText(DashBoardActivity.this, R.string.other_error, Toast.LENGTH_SHORT).show();
+                }
+            } else {
+                shiftArray = new String[0];
+                // Do nothing
+            }
+
+            int time = 8;
+            objects.clear();
+            for (int i = 1; i < 14; i++) {
+                if (Arrays.asList(shiftArray).contains("Shift -" + i))
+                    objects.add(new CustomObject("Shift -" + i, "Shift Timing: " +
+                            ((((time + 1) + "").length() == 1) ? "0" + (time + 1) : (time + 1)) + ":00 HS",
+                            ((((time + 1) + "").length() == 1) ? "0" + (time + 1) : (time + 1)) + ":00 - Not Available !"));
+                else
+                    objects.add(new CustomObject("Shift -" + i, "Shift Timing: " +
+                            ((((time + 1) + "").length() == 1) ? "0" + (time + 1) : (time + 1)) + ":00 HS",
+                            ((((time + 1) + "").length() == 1) ? "0" + (time + 1) : (time + 1)) + ":00 - Available !"));
+
+                time++;
+            }
+
+            CustomAdapter customAdapter = new CustomAdapter(DashBoardActivity.this, objects, shiftArray);
+            myListView.setAdapter(customAdapter);
+
+            dialog.dismiss();
+        }
+    }
 }
