@@ -43,7 +43,7 @@ public class AlarmActivity extends Activity {
             mMediaPlayer.setVolume(Float.parseFloat(Double.toString(am.getStreamVolume(AudioManager.STREAM_ALARM) / 7.0)),
                     Float.parseFloat(Double.toString(am.getStreamVolume(AudioManager.STREAM_RING) / 7.0)));
 
-            mMediaPlayer.setLooping(true);
+            mMediaPlayer.setLooping(true);//  
             mMediaPlayer.prepare();
             mMediaPlayer.start();
 
